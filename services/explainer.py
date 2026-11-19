@@ -9,6 +9,19 @@ NEXT_STEPS = {
 
 
 def generate_explanation(alert: Alert) -> str:
+    """Generate a textual explanation for an alert.
+
+    Args:
+        alert: Alert whose severity, source, title, metric, value, and threshold
+            are used to build the explanation.
+
+    Returns:
+        A string describing the metric's relation to its threshold and the
+        recommended next step.
+
+    Raises:
+        KeyError: If the alert's severity is not present in ``NEXT_STEPS``.
+    """
     if alert.metric_value > alert.threshold:
         comparison = "exceeded"
     elif alert.metric_value < alert.threshold:
