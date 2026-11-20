@@ -33,3 +33,4 @@ class ExplainResponse(BaseModel):
     alert_id: int
     explanation: str
     generated_at: datetime
+    acknowledged: bool = False

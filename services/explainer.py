@@ -8,30 +8,39 @@ NEXT_STEPS = {
 }
 
 
-def generate_explanation(alert: Alert) -> str:
-    """Generate a textual explanation for an alert.
-
-    Args:
-        alert: Alert whose severity, source, title, metric, value, and threshold
-            are used to build the explanation.
-
-    Returns:
-        A string describing the metric's relation to its threshold and the
-        recommended next step.
-
-    Raises:
-        KeyError: If the alert's severity is not present in ``NEXT_STEPS``.
-    """
-    if alert.metric_value > alert.threshold:
-        comparison = "exceeded"
-    elif alert.metric_value < alert.threshold:
-        comparison = "fell below"
-    else:
-        comparison = "reached"
-
-    return (
-        f'This {alert.severity} alert from {alert.source} is titled "{alert.title}". '
-        f"The {alert.metric_name} metric {comparison} its threshold: the current value is "
-        f"{alert.metric_value}, compared with a threshold of {alert.threshold}. "
-        f"Recommended next step: {NEXT_STEPS[alert.severity]}"
+def generate_explanation(alert: Alert) -> str: 
+    """Generate a rule-based plain-language explanation for an alert. 
+ 
+    Args: 
+        alert: Alert whose metric, threshold, severity, source, and title are 
+            used to create the explanation. 
+ 
+    Returns: 
+        A plain-language explanation with a recommended next step. 
+ 
+    Raises: 
+        AttributeError: If ``alert.severity`` is not a string. 
+    """ 
+    if alert.metric_value > alert.threshold: 
+        threshold_event = "exceeded" 
+    elif alert.metric_value < alert.threshold: 
+        threshold_event = "fell below" 
+    else: 
+        threshold_event = "reached" 
+ 
+    if alert.severity.lower() == "critical": 
+        next_step = "Investigate immediately and take corrective action." 
+    elif alert.severity.lower() == "warning":
+        next_step = "Review the affected system and monitor the metric closely." 
+    else: 
+        next_step = "Review the metric and confirm whether any action is needed." 
+ 
+    acknowledgement = "Not yet acknowledged" 
+ 
+    return ( 
+        f"This {alert.severity} alert from {alert.source} is titled " 
+        f"\"{alert.title}\". The {alert.metric_name} metric {threshold_event} " 
+        f"its threshold: the current value is {alert.metric_value}, compared " 
+        f"with a threshold of {alert.threshold}. Recommended next step: " 
+        f"{next_step} Acknowledged by: {acknowledgement}." 
     )
